@@ -40,21 +40,48 @@ export default function OtpForm() {
   function handleKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
     const previousInput = event.currentTarget.previousElementSibling as HTMLInputElement | null
     // console.log(previousInput)
+    const nextInput = event.currentTarget.nextElementSibling as HTMLInputElement | null
     
     if (previousInput && event.key === 'Backspace' && !event.currentTarget.value) {
       previousInput.focus()
     }
 
+    if (event.key === 'ArrowRight') {
+      if (nextInput) {
+        nextInput.focus()
+      }
     }
+
+    if (event.key === 'ArrowLeft') {
+      if (previousInput) {
+        previousInput.focus()
+      }
+    }
+  }
+
+  function handlePaste(event: React.ClipboardEvent<HTMLInputElement>) {
+    event.preventDefault()
+    const clipboardData = event.clipboardData?.getData('text') || ''
+    const otpArray = clipboardData.split('').filter((el) => /^\d*$/.test(el)).slice(0, 5)
+    
+    if (otpArray.length !== 5) {
+      alert('Você colou um código com formato inválido.')
+      return
+    }
+    setOtp(otpArray as OtpType)
+  }
 
   return (
     <form className="mt-10">
       <div className="flex items-center justify-center gap-3">
         <input
+          inputMode="numeric"
+          autoComplete="one-time-code" 
           ref={firstInputRef}
           required
           onChange={handleChange}
           onKeyDown={handleKeyDown}
+          onPaste={handlePaste}
           maxLength={1}
           value={otp[0]}
           name="otp-0"
@@ -62,40 +89,52 @@ export default function OtpForm() {
           className="w-10 p-2 bg-stone-200 text-stone-800 rounded-lg text-3xl text-center"
         />
         <input
+          inputMode="numeric"
+          autoComplete="one-time-code" 
           maxLength={1}
           required
           onChange={handleChange}
           onKeyDown={handleKeyDown}
+          onPaste={handlePaste}
           value={otp[1]}
           name="otp-1"
           type="text"
           className="w-10 p-2 bg-stone-200 text-stone-800 rounded-lg text-3xl text-center"
         />
         <input
+          inputMode="numeric"
+          autoComplete="one-time-code" 
           maxLength={1}
           required
           onChange={handleChange}
           onKeyDown={handleKeyDown}
+          onPaste={handlePaste}
           value={otp[2]}
           name="otp-2"
           type="text"
           className="w-10 p-2 bg-stone-200 text-stone-800 rounded-lg text-3xl text-center"
         />
         <input
+          inputMode="numeric"
+          autoComplete="one-time-code" 
           maxLength={1}
           required
           onChange={handleChange}
           onKeyDown={handleKeyDown}
+          onPaste={handlePaste}
           value={otp[3]}
           name="otp-3"
           type="text"
           className="w-10 p-2 bg-stone-200 text-stone-800 rounded-lg text-3xl text-center"
         />
         <input
+          autoComplete="one-time-code" 
+          inputMode="numeric"
           maxLength={1}
           required
           onChange={handleChange}
           onKeyDown={handleKeyDown}
+          onPaste={handlePaste}
           value={otp[4]}
           name="otp-4"
           type="text"
